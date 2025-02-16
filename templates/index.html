@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Prediction Form</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('static/background.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        input[type="text"], input[type="number"] {
+            width: calc(33.333% - 10px);
+            padding: 12px;
+            margin: 8px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #FF0000; /* Red color for the button */
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #CC0000;
+        }
+        .result {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 20px;
+            color: #333; /* Ensuring result text is visible */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Salary Prediction Form</h2>
+        <form id="predictionForm">
+            <input type="text" name="experience" placeholder="Enter Experience">
+            <input type="text" name="test_score" placeholder="Enter Test Score">
+            <input type="text" name="interview_score" placeholder="Enter Interview Score">
+            <input type="submit" value="Predict!">
+        </form>
+        <!-- Adding a div to display the result -->
+        <div id="result" class="result"></div>
+    </div>
+    <script>
+        document.getElementById('predictionForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            console.log("Form Data Submitted: ", Object.fromEntries(formData.entries()));
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.text();
+                console.log("Server Response: ", result);
+                document.getElementById('result').innerHTML = 'Predicted Employee Salary: ' + result;
+            } catch (error) {
+                console.error('Error making fetch call:', error);
+                document.getElementById('result').innerHTML = 'Error predicting salary.';
+            }
+        };
+    </script>
+</body>
+</html>
